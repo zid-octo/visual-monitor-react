@@ -1,0 +1,71 @@
+name: Monitor & Deploy
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */12 * * *'
+
+# Contents write = push baselines/diffs back to main.
+# Pages write + id-token = deploy to GitHub Pages.
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+# Prevent overlapping runs; never cancel an in-progress deploy.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  monitor-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install npm dependencies
+        run: npm install
+
+      - name: Install Playwright Chromium + OS deps
+        run: npx playwright install chromium --with-deps
+
+      - name: Run visual scraper
+        run: node scraper.js
+        env:
+          SMTP_EMAIL: ${{ secrets.SMTP_EMAIL }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+
+      - name: Commit updated snapshots back to main
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/baselines/ public/diffs/ public/data.json
+          git diff --staged --quiet || \
+            git commit -m "chore: update monitoring snapshots [skip ci]"
+          git push
+
+      - name: Build React dashboard
+        run: npm run build
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
