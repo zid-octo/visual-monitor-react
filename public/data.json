@@ -1,1 +1,24 @@
-[]
+[
+  {
+    "name": "Hacker News",
+    "url": "https://news.ycombinator.com",
+    "timestamp": "2026-06-12T12:28:40.140Z",
+    "baselineImage": "baselines/hacker-news.png",
+    "diffImage": null,
+    "changed": false,
+    "isNew": true,
+    "diffPercent": 0,
+    "error": null
+  },
+  {
+    "name": "Example",
+    "url": "https://example.com",
+    "timestamp": "2026-06-12T12:28:40.867Z",
+    "baselineImage": "baselines/example.png",
+    "diffImage": null,
+    "changed": false,
+    "isNew": true,
+    "diffPercent": 0,
+    "error": null
+  }
+]
