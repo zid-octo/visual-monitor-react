@@ -2,18 +2,18 @@
   {
     "name": "Hacker News",
     "url": "https://news.ycombinator.com",
-    "timestamp": "2026-06-15T18:12:00.005Z",
+    "timestamp": "2026-06-16T18:21:32.023Z",
     "baselineImage": "baselines/hacker-news.png",
     "diffImage": "diffs/hacker-news-diff.png",
     "changed": true,
     "isNew": false,
-    "diffPercent": 5.24,
+    "diffPercent": 5.14,
     "error": null
   },
   {
     "name": "Example",
     "url": "https://example.com",
-    "timestamp": "2026-06-15T18:12:03.106Z",
+    "timestamp": "2026-06-16T18:21:36.143Z",
     "baselineImage": "baselines/example.png",
     "diffImage": null,
     "changed": false,
