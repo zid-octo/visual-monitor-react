@@ -503,6 +503,23 @@ body {
   flex-shrink: 0;
 }
 
+.confirm-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.confirm-label {
+  font-size: 11px;
+  color: var(--red);
+  font-weight: 500;
+}
+
+.btn-sm {
+  font-size: 11px;
+  padding: 3px 8px;
+}
+
 /* ── Responsive ──────────────────────────────────────────────── */
 @media (max-width: 700px) {
   .grid {

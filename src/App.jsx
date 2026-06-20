@@ -165,6 +165,8 @@ function ManagePanel({ pat, onSaveToken, onAdd, busy, notice }) {
 /* ── CompetitorCard ─────────────────────────────────────────── */
 
 function CompetitorCard({ site, managing, onDelete }) {
+  const [confirming, setConfirming] = useState(false)
+
   return (
     <div className={`card${site.changed ? ' card-changed' : ''}`}>
       <div className="card-header">
@@ -185,13 +187,30 @@ function CompetitorCard({ site, managing, onDelete }) {
             isNew={site.isNew}
             diffPercent={site.diffPercent}
           />
-          {managing && (
+          {managing && !confirming && (
             <button
               className="btn btn-danger"
-              onClick={() => onDelete(site.url, site.name)}
+              onClick={() => setConfirming(true)}
             >
               Remove
             </button>
+          )}
+          {managing && confirming && (
+            <div className="confirm-row">
+              <span className="confirm-label">Remove?</span>
+              <button
+                className="btn btn-danger"
+                onClick={() => { setConfirming(false); onDelete(site.url, site.name) }}
+              >
+                Yes
+              </button>
+              <button
+                className="btn btn-ghost btn-sm"
+                onClick={() => setConfirming(false)}
+              >
+                Cancel
+              </button>
+            </div>
           )}
         </div>
       </div>
@@ -307,7 +326,6 @@ export default function App() {
 
   async function handleDelete(url, name) {
     if (!pat) return showNotice(false, 'No token saved — enter one above.')
-    if (!window.confirm(`Remove "${name}" from competitors.json?`)) return
     setBusy(true)
     try {
       const { entries, sha } = await fetchCompetitors(pat)
@@ -318,6 +336,7 @@ export default function App() {
         `feat: remove ${name} from competitors`
       )
       await triggerWorkflow(pat)
+      setSites(prev => prev.filter(s => s.url !== url))
       showNotice(true, `"${name}" removed. Scraper workflow triggered.`)
     } catch (err) {
       showNotice(false, err.message)
