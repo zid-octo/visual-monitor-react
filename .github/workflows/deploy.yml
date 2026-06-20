@@ -27,6 +27,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Node.js 20
         uses: actions/setup-node@v4
@@ -53,6 +55,7 @@ jobs:
           git add public/baselines/ public/diffs/ public/data.json
           git diff --staged --quiet || \
             git commit -m "chore: update monitoring snapshots [skip ci]"
+          git pull --rebase origin main
           git push
 
       - name: Build React dashboard
